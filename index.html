@@ -1,401 +1,340 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta name="google-site-verification" content="ephljMtK09_JqeiopXSWT2s8CiUC86_-IhKE1PWKbX8" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estrategia Migratoria: El Salvador a España</title>
+    <title>Estrategia Migratoria: El Salvador - España</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
-        
         :root {
-            --brand-primary: #1e40af;
-            --brand-accent: #ea580c;
-            --bg-soft: #f8fafc;
+            --navy: #0a1d37;
+            --gold: #c5a059;
+            --ivory: #fdfbf7;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-soft);
-            scroll-behavior: smooth;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--ivory);
+            color: var(--navy);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        /* Transiciones de "Página" */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease-out;
+        }
+
+        .page-view.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .nav-active {
+            color: var(--gold) !important;
+            border-bottom: 2px solid var(--gold);
         }
 
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
-            height: 350px;
+            height: 300px;
         }
 
-        .visa-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .visa-card.active {
-            border-color: var(--brand-primary);
-            background-color: white;
-            box-shadow: 0 10px 25px -5px rgba(30, 64, 175, 0.1);
-        }
-
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-<body class="text-slate-900 overflow-x-hidden">
+<body>
 
-<!-- Chosen Palette: Horizonte Profesional (Azul Índigo, Naranja Teja y Blanco Hueso) -->
+<!-- Chosen Palette: Excellence & Trust (Azul Profundo, Oro y Marfil) -->
 <!-- Application Structure Plan: 
-    1. Dashboard Centralizado: Resumen ejecutivo del plan migratorio.
-    2. Explorador de Visados: Interfaz interactiva para comparar rutas (Estudio, No Lucrativa, Nómada, Arraigo).
-    3. Simulador Financiero: Cálculo de fondos IPREM basado en la unidad familiar salvadoreña.
-    4. Base Documental: Lista interactiva de trámites en San Salvador (Apostilla, Penales, Médicos).
-    5. Centro de Enlaces: Acceso directo a verificaciones oficiales.
-    La estructura prioriza la navegación por objetivos (Estudiar vs. Trabajar vs. Invertir) para facilitar la digestión de información legal compleja. -->
+    1. Navigation: Header fijo con lógica de cambio de vista por ID.
+    2. Home (View): Resumen ejecutivo y propuesta de valor.
+    3. Rutas (View): Catálogo interactivo de visados.
+    4. Finanzas (View): Calculadora dinámica de IPREM 2026.
+    5. Proceso (View): Línea de tiempo interactiva de trámites.
+    La arquitectura utiliza una función central `showPage(id)` para alternar la visibilidad de los contenedores sin recargar el navegador. -->
 
 <!-- Visualization & Content Choices: 
-    - Chart.js: Comparativa de solvencia económica requerida por tipo de visado.
-    - JS State: Manejo de paneles de información para evitar la sobrecarga cognitiva.
-    - Grid/Flexbox: Layout responsive para consulta rápida en móviles durante trámites presenciales.
+    - Cambio de vista mediante manipulación del DOM (display/opacity).
+    - Chart.js para visualización financiera en la vista de presupuesto.
+    - Secciones separadas lógicamente para mejorar la concentración del usuario.
     CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
-<nav class="fixed top-0 w-full z-50 glass-effect">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex justify-between h-20 items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">E</div>
-                <span class="font-bold text-xl tracking-tight">Migración España <span class="text-indigo-600">2026</span></span>
-            </div>
-            <div class="hidden md:flex space-x-8 text-sm font-semibold uppercase text-slate-500 tracking-widest">
-                <a href="#explorador" class="hover:text-indigo-600 transition">Visados</a>
-                <a href="#calculadora" class="hover:text-indigo-600 transition">Finanzas</a>
-                <a href="#logistica" class="hover:text-indigo-600 transition">Logística</a>
-                <a href="#enlaces" class="bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Verificar Datos</a>
-            </div>
+<nav class="fixed top-0 w-full z-50 bg-white/80 border-b border-gray-100 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
+            <div class="w-8 h-8 bg-navy text-white flex items-center justify-center font-bold text-lg">E</div>
+            <span class="font-bold tracking-widest text-xs uppercase hidden sm:block">Estrategia Legal</span>
+        </div>
+        
+        <div class="flex space-x-6 md:space-x-10 text-[10px] font-bold uppercase tracking-widest">
+            <button onclick="showPage('home')" id="nav-home" class="nav-link py-2 transition hover:text-gold nav-active">Inicio</button>
+            <button onclick="showPage('rutas')" id="nav-rutas" class="nav-link py-2 transition hover:text-gold">Rutas</button>
+            <button onclick="showPage('finanzas')" id="nav-finanzas" class="nav-link py-2 transition hover:text-gold">Finanzas</button>
+            <button onclick="showPage('tramites')" id="nav-tramites" class="nav-link py-2 transition hover:text-gold">Trámites</button>
         </div>
     </div>
 </nav>
 
-<header class="pt-32 pb-20 px-6 bg-white border-b border-slate-100">
-    <div class="max-w-5xl mx-auto text-center">
-        <span class="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-wider mb-6">Guía Estratégica Integral</span>
-        <h1 class="text-4xl md:text-6xl font-bold text-slate-900 mb-8 leading-tight">
-            Navega tu Futuro: De San Salvador a <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-orange-600">la Península Ibérica</span>
-        </h1>
-        <p class="text-xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Un análisis interactivo de los vacíos legales, requisitos financieros y procedimientos administrativos para garantizar una transición exitosa a España.
+<!-- VISTA: INICIO -->
+<div id="page-home" class="page-view active pt-32 pb-20 px-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-4 text-gold font-bold tracking-[0.4em] text-[10px] uppercase">Bienvenido a su Proyecto de Vida</div>
+        <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-8">La excelencia migratoria <br> <span class="italic font-normal">empieza con un plan.</span></h1>
+        <p class="text-lg text-slate-500 leading-relaxed mb-12 max-w-2xl font-light">
+            Diseñamos esta herramienta para la comunidad salvadoreña, permitiéndole explorar rutas legales, calcular solvencia financiera y organizar su documentación para España de forma segmentada y clara.
         </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div onclick="showPage('rutas')" class="bg-white p-8 border border-slate-100 shadow-sm hover:border-gold transition cursor-pointer group">
+                <h3 class="font-bold text-xl mb-2 group-hover:text-gold transition">Explorar Visados</h3>
+                <p class="text-sm text-slate-400">Descubra cuál es el programa que mejor se adapta a su perfil profesional.</p>
+            </div>
+            <div onclick="showPage('finanzas')" class="bg-navy text-white p-8 shadow-xl hover:bg-slate-800 transition cursor-pointer">
+                <h3 class="font-bold text-xl mb-2 text-gold">Simulador Financiero</h3>
+                <p class="text-sm text-slate-300">Calcule los ahorros necesarios basados en el IPREM actual y futuro.</p>
+            </div>
+        </div>
     </div>
-</header>
+</div>
 
-<!-- SECCIÓN: EXPLORADOR DE VISADOS -->
-<section id="explorador" class="py-24 px-6 max-w-7xl mx-auto">
-    <div class="mb-16 text-center md:text-left">
-        <h2 class="text-3xl font-bold mb-4">Explorador de Rutas Migratorias</h2>
-        <p class="text-slate-600 max-w-2xl">Selecciona una categoría para desglosar los requisitos específicos, pros y contras de cada vía legal hacia la residencia.</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Sidebar Selector -->
-        <div class="lg:col-span-4 space-y-4">
-            <button onclick="showVisa(0)" class="visa-btn w-full p-5 rounded-2xl border-2 text-left visa-card active" id="btn-0">
-                <h3 class="font-bold text-lg">Visado de Estudiante</h3>
-                <p class="text-xs text-slate-500 mt-1">Para programas > 90 días con derecho a trabajo parcial.</p>
-            </button>
-            <button onclick="showVisa(1)" class="visa-btn w-full p-5 rounded-2xl border-2 text-left visa-card border-slate-100 bg-slate-50" id="btn-1">
-                <h3 class="font-bold text-lg">Residencia No Lucrativa</h3>
-                <p class="text-xs text-slate-500 mt-1">Residir sin trabajar. Requiere altos ahorros bancarios.</p>
-            </button>
-            <button onclick="showVisa(2)" class="visa-btn w-full p-5 rounded-2xl border-2 text-left visa-card border-slate-100 bg-slate-50" id="btn-2">
-                <h3 class="font-bold text-lg">Nómada Digital</h3>
-                <p class="text-xs text-slate-500 mt-1">Teletrabajo para empresas fuera de España con beneficios fiscales.</p>
-            </button>
-            <button onclick="showVisa(3)" class="visa-btn w-full p-5 rounded-2xl border-2 text-left visa-card border-slate-100 bg-slate-50" id="btn-3">
-                <h3 class="font-bold text-lg">Arraigo Familiar</h3>
-                <p class="text-xs text-slate-500 mt-1">Vínculos con ciudadanos españoles o residentes legales.</p>
-            </button>
+<!-- VISTA: RUTAS (VISAS) -->
+<div id="page-rutas" class="page-view pt-32 pb-20 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Catálogo de Residencias</h2>
+            <p class="text-slate-500 max-w-xl mx-auto text-sm">Seleccione una opción para ver los requisitos específicos y niveles de complejidad.</p>
         </div>
 
-        <!-- Detail Display -->
-        <div class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm" id="visa-content">
-            <div id="visa-loader" class="animate-pulse space-y-4 hidden">
-                <div class="h-8 bg-slate-200 rounded w-1/4"></div>
-                <div class="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div class="h-32 bg-slate-200 rounded"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Visa Card 1 -->
+            <div class="bg-white p-10 border border-slate-100 shadow-xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 font-serif italic text-slate-100 text-6xl">01</div>
+                <h3 class="font-bold text-xl mb-6 uppercase tracking-wider">Estudios</h3>
+                <ul class="space-y-4 text-xs text-slate-600 mb-8">
+                    <li>• Matrícula en centro autorizado</li>
+                    <li>• Seguro médico completo</li>
+                    <li>• 100% IPREM mensual</li>
+                    <li>• Permiso de trabajo (30h)</li>
+                </ul>
+                <div class="pt-6 border-t border-slate-50">
+                    <span class="text-[10px] font-bold text-gold uppercase tracking-widest">Complejidad: Baja-Media</span>
+                </div>
             </div>
-            <div id="visa-data">
-                <div class="flex justify-between items-start mb-6">
-                    <h3 class="text-2xl font-bold text-indigo-900" id="v-name">Visado de Estudiante</h3>
-                    <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full" id="v-difficulty">Media</span>
+
+            <!-- Visa Card 2 -->
+            <div class="bg-white p-10 border border-slate-100 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 font-serif italic text-slate-100 text-6xl">02</div>
+                <h3 class="font-bold text-xl mb-6 uppercase tracking-wider">Nómada Digital</h3>
+                <ul class="space-y-4 text-xs text-slate-600 mb-8">
+                    <li>• Contrato con empresa extranjera</li>
+                    <li>• Título universitario o 3 años exp.</li>
+                    <li>• Ingresos > 200% IPREM</li>
+                    <li>• Beneficios Ley Beckham</li>
+                </ul>
+                <div class="pt-6 border-t border-slate-50">
+                    <span class="text-[10px] font-bold text-gold uppercase tracking-widest">Complejidad: Media</span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div>
-                        <h4 class="font-bold text-sm uppercase text-slate-400 mb-4 tracking-tighter">Requisitos Críticos</h4>
-                        <ul class="space-y-3" id="v-reqs">
-                            <li class="flex items-start gap-2 text-sm">
-                                <span class="text-indigo-500">✔</span> Carta de admisión en centro autorizado (U. Pública o Privada).
-                            </li>
-                            <li class="flex items-start gap-2 text-sm">
-                                <span class="text-indigo-500">✔</span> Seguro médico sin carencias ni copagos.
-                            </li>
-                            <li class="flex items-start gap-2 text-sm">
-                                <span class="text-indigo-500">✔</span> Medios económicos (100% IPREM mensual).
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm uppercase text-slate-400 mb-4 tracking-tighter">Venta Estratégica</h4>
-                        <p class="text-sm text-slate-600 italic bg-amber-50 p-4 rounded-xl border border-amber-100" id="v-insight">
-                            "Permite trabajar hasta 30 horas semanales automáticamente si el empleo es compatible con los estudios."
-                        </p>
-                    </div>
-                </div>
-                <div class="border-t pt-6">
-                    <a href="https://www.exteriores.gob.es/Embajadas/sansalvador/es/ServiciosConsulares/Paginas/index.aspx" target="_blank" class="text-indigo-600 font-bold hover:underline inline-flex items-center gap-2">
-                        Verificar en el Consulado de San Salvador ↗
-                    </a>
+            </div>
+
+            <!-- Visa Card 3 -->
+            <div class="bg-white p-10 border border-slate-100 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 font-serif italic text-slate-100 text-6xl">03</div>
+                <h3 class="font-bold text-xl mb-6 uppercase tracking-wider">No Lucrativa</h3>
+                <ul class="space-y-4 text-xs text-slate-600 mb-8">
+                    <li>• No permite trabajar en España</li>
+                    <li>• Fondos: 400% IPREM anual</li>
+                    <li>• Residencia para jubilados</li>
+                    <li>• Requiere ahorros líquidos</li>
+                </ul>
+                <div class="pt-6 border-t border-slate-50">
+                    <span class="text-[10px] font-bold text-gold uppercase tracking-widest">Complejidad: Alta</span>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- SECCIÓN: CALCULADORA FINANCIERA -->
-<section id="calculadora" class="py-24 bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-6">
+<!-- VISTA: FINANZAS -->
+<div id="page-finanzas" class="page-view pt-32 pb-20 px-6">
+    <div class="max-w-5xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 class="text-3xl font-bold mb-6">Simulador de Solvencia IPREM 2026</h2>
-                <p class="text-slate-400 mb-8 leading-relaxed">
-                    El IPREM es el índice que usa España para medir si tienes dinero suficiente. Este cálculo es vital para evitar el rechazo del visado.
-                </p>
-                <div class="space-y-6">
+                <h2 class="text-4xl font-bold mb-6">Análisis de Solvencia</h2>
+                <p class="text-slate-500 mb-10 font-light">Utilice este simulador para proyectar los fondos requeridos por el Consulado de España en San Salvador.</p>
+                
+                <div class="space-y-8 bg-white p-8 border border-slate-100">
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Composición de la Unidad Familiar</label>
-                        <select id="calc-family" onchange="updateCalc()" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="1">Solo Titular</option>
-                            <option value="2">Titular + 1 Familiar</option>
-                            <option value="3">Titular + 2 Familiares</option>
-                            <option value="4">Titular + 3 Familiares</option>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Número de Personas</label>
+                        <select id="calc-ppl" onchange="updateFinance()" class="w-full bg-slate-50 p-4 border-none outline-none text-sm">
+                            <option value="1">Solo Titular (100%)</option>
+                            <option value="2">Titular + 1 Familiar (175%)</option>
+                            <option value="3">Titular + 2 Familiares (225%)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Duración de la Estancia (Meses)</label>
-                        <input type="range" id="calc-months" min="1" max="24" value="12" oninput="updateCalc()" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-                        <div class="flex justify-between text-xs mt-2 text-slate-500">
-                            <span>1 mes</span>
-                            <span id="label-months" class="text-indigo-400 font-bold">12 meses</span>
-                            <span>24 meses</span>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Meses de Estancia</label>
+                        <input type="range" id="calc-time" min="6" max="24" value="12" oninput="updateFinance()" class="w-full accent-navy">
+                        <div class="flex justify-between mt-2 text-[10px] font-bold text-gold">
+                            <span id="time-val">12 meses</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl">
-                <div class="text-center mb-10">
-                    <span class="text-slate-400 text-xs uppercase font-bold tracking-widest">Fondos Mínimos Requeridos</span>
-                    <div class="text-5xl font-bold mt-4 text-indigo-400" id="total-amount">€ 7.200,00</div>
-                    <div class="text-sm text-slate-500 mt-2 italic" id="amount-usd">≈ $ 7.850,00 USD</div>
+
+            <div class="bg-navy text-white p-10 rounded-sm">
+                <div class="text-center mb-8">
+                    <div class="text-[10px] font-bold tracking-[0.3em] text-gold uppercase mb-2">Total Requerido (€)</div>
+                    <div id="total-price" class="text-5xl font-serif">7.200 €</div>
                 </div>
                 <div class="chart-container">
-                    <canvas id="ipremChart"></canvas>
+                    <canvas id="financeChart"></canvas>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-6 leading-tight">
-                    *Cálculo basado en el IPREM proyectado de €600. Para Residencia No Lucrativa, el titular debe demostrar el 400% del IPREM (€2.400/mes).
-                </p>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- SECCIÓN: LOGÍSTICA EN SAN SALVADOR -->
-<section id="logistica" class="py-24 px-6 max-w-6xl mx-auto">
-    <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold mb-4">Checklist de Logística Crítica</h2>
-        <p class="text-slate-600">Trámites locales en El Salvador que deben gestionarse 3 meses antes del viaje.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Paso 1 -->
-        <div class="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:border-indigo-300 transition group">
-            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center font-bold mb-6 group-hover:bg-indigo-600 group-hover:text-white transition">1</div>
-            <h3 class="font-bold text-xl mb-4">Apostilla de La Haya</h3>
-            <p class="text-sm text-slate-500 mb-6 leading-relaxed">
-                Debes acudir al Ministerio de Relaciones Exteriores (Cancillería) en San Salvador. Sin apostilla, tus antecedentes y títulos no valen nada en España.
-            </p>
-            <a href="https://rree.gob.sv/apostilla-y-autentica/" target="_blank" class="text-xs font-bold text-indigo-600 hover:underline">Ir a Cancillería El Salvador ↗</a>
-        </div>
-
-        <!-- Paso 2 -->
-        <div class="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:border-indigo-300 transition group">
-            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center font-bold mb-6 group-hover:bg-amber-600 group-hover:text-white transition">2</div>
-            <h3 class="font-bold text-xl mb-4">Antecedentes Penales</h3>
-            <p class="text-sm text-slate-500 mb-6 leading-relaxed">
-                Deben ser de los últimos 5 años. Se solicitan en la DGCP. Recuerda que caducan a los 90 días desde su emisión para trámites españoles.
-            </p>
-            <a href="https://dgcp.gob.sv/" target="_blank" class="text-xs font-bold text-amber-600 hover:underline">Solicitar en línea ↗</a>
-        </div>
-
-        <!-- Paso 3 -->
-        <div class="p-8 bg-white border border-slate-200 rounded-3xl shadow-sm hover:border-indigo-300 transition group">
-            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center font-bold mb-6 group-hover:bg-green-600 group-hover:text-white transition">3</div>
-            <h3 class="font-bold text-xl mb-4">Certificado Médico</h3>
-            <p class="text-sm text-slate-500 mb-6 leading-relaxed">
-                Debe ser firmado por un médico colegiado y contener la frase legal sobre el "Reglamento Sanitario Internacional de 2005".
-            </p>
-            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-400">Requisito Obligatorio</span>
-        </div>
-    </div>
-</section>
-
-<!-- SECCIÓN: ENLACES DE VERIFICACIÓN -->
-<section id="enlaces" class="py-24 bg-indigo-50">
-    <div class="max-w-4xl mx-auto px-6">
-        <div class="bg-white rounded-3xl shadow-xl p-10">
-            <h2 class="text-2xl font-bold mb-8 text-center text-slate-800">Centro de Verificación Oficial</h2>
-            <div class="space-y-4">
-                <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2011-1487" target="_blank" class="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:bg-slate-50 transition">
-                    <span class="font-semibold text-slate-700">Ley de Extranjería (BOE)</span>
-                    <span class="text-slate-300">➜</span>
-                </a>
-                <a href="https://www.inclusion.gob.es/web/migraciones/vivir-en-espana" target="_blank" class="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:bg-slate-50 transition">
-                    <span class="font-semibold text-slate-700">Portal de Inmigración España</span>
-                    <span class="text-slate-300">➜</span>
-                </a>
-                <a href="https://www.exteriores.gob.es/Embajadas/sansalvador/es/Paginas/index.aspx" target="_blank" class="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:bg-slate-50 transition">
-                    <span class="font-semibold text-slate-700">Embajada de España en El Salvador</span>
-                    <span class="text-slate-300">➜</span>
-                </a>
+<!-- VISTA: TRAMITES -->
+<div id="page-tramites" class="page-view pt-32 pb-20 px-6">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-12 text-center">Hoja de Ruta Logística</h2>
+        
+        <div class="space-y-12">
+            <div class="flex gap-8 items-start">
+                <div class="w-12 h-12 rounded-full border border-gold flex items-center justify-center font-bold flex-shrink-0">1</div>
+                <div>
+                    <h4 class="font-bold text-lg mb-2 uppercase tracking-wide">Documentación en El Salvador</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">Solicitud de antecedentes penales, partidas de nacimiento y títulos académicos. Todo debe pasar por la Apostilla de La Haya en Cancillería.</p>
+                </div>
             </div>
-            <div class="mt-8 p-6 bg-indigo-900 text-white rounded-2xl">
-                <h4 class="font-bold mb-2">💡 Estrategia de Vacío Legal:</h4>
-                <p class="text-xs text-indigo-200 leading-relaxed">
-                    Si no cuentas con el efectivo líquido, algunos consulados aceptan depósitos a plazo fijo o rentas garantizadas si se demuestra la disponibilidad inmediata mediante carta bancaria certificada. Consulta con un abogado de extranjería antes de presentar fondos no líquidos.
-                </p>
+            <div class="flex gap-8 items-start">
+                <div class="w-12 h-12 rounded-full border border-gold flex items-center justify-center font-bold flex-shrink-0">2</div>
+                <div>
+                    <h4 class="font-bold text-lg mb-2 uppercase tracking-wide">Cita en Embajada</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">Presentación presencial en San Salvador. Los expedientes tardan entre 30 y 60 días en ser resueltos por las oficinas de extranjería en España.</p>
+                </div>
+            </div>
+            <div class="flex gap-8 items-start">
+                <div class="w-12 h-12 rounded-full border border-gold flex items-center justify-center font-bold flex-shrink-0">3</div>
+                <div>
+                    <h4 class="font-bold text-lg mb-2 uppercase tracking-wide">Llegada y TIE</h4>
+                    <p class="text-sm text-slate-500 leading-relaxed">Una vez en España, dispone de 30 días para solicitar la Tarjeta de Identidad de Extranjero (TIE) en la comisaría de policía más cercana a su empadronamiento.</p>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<footer class="py-12 text-center text-slate-400 text-xs px-6">
-    <p>© 2026 Guía Independiente de Apoyo Migratorio Familiar.</p>
-    <p class="mt-2">Esta herramienta es de carácter informativo y no sustituye el asesoramiento legal oficial del Ministerio de Asuntos Exteriores de España.</p>
+<footer class="mt-auto py-10 bg-white border-t border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+        <span>Guía Migratoria 2026</span>
+        <div class="flex gap-4">
+            <a href="#" class="hover:text-navy">Privacidad</a>
+            <a href="#" class="hover:text-navy">Fuentes Oficiales</a>
+        </div>
+    </div>
 </footer>
 
 <script>
-    const visaDetails = [
-        {
-            name: "Visado de Estudiante",
-            diff: "Media",
-            insight: "La vía más flexible. Permite trabajar 30h/semana y tras 1 año puedes modificar a permiso de trabajo si tienes una oferta laboral.",
-            reqs: ["Matrícula en centro autorizado", "Seguro médico sin copagos", "100% IPREM mensual demostrado", "Alojamiento garantizado"],
-            color: "green"
-        },
-        {
-            name: "Residencia No Lucrativa",
-            diff: "Alta",
-            insight: "Para familias que quieren vivir sin trabajar. El reto es el fondo: €28.800 anuales para el titular + €7.200 por cada familiar.",
-            reqs: ["400% IPREM para titular", "100% IPREM para cada familiar", "Seguro médico privado completo", "Antecedentes penales impecables"],
-            color: "orange"
-        },
-        {
-            name: "Nómada Digital",
-            diff: "Media-Alta",
-            insight: "Nueva ley de startups. Solo pagas 15% de impuestos (Ley Beckham) y el requisito de fondo es menor que la No Lucrativa.",
-            reqs: ["Título universitario o 3 años experiencia", "Contrato remoto vigente", "200% IPREM titular", "75% familiar 1, 50% adicionales"],
-            color: "blue"
-        },
-        {
-            name: "Arraigo Familiar",
-            diff: "Baja (Si aplica)",
-            insight: "Si tienes hijos españoles o padres españoles de origen, obtienes residencia de 5 años con derecho a trabajo inmediato.",
-            reqs: ["Vínculo familiar acreditado", "Presencia física en España", "No requiere IPREM previo habitualmente", "Tasa 790 052 pagada"],
-            color: "indigo"
+    let currentChart;
+
+    // Lógica de navegación principal (El "cambio de página")
+    function showPage(pageId) {
+        // 1. Ocultar todas las páginas
+        const pages = document.querySelectorAll('.page-view');
+        pages.forEach(p => {
+            p.classList.remove('active');
+        });
+
+        // 2. Mostrar la seleccionada
+        const target = document.getElementById('page-' + pageId);
+        target.classList.add('active');
+
+        // 3. Actualizar menú de navegación
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(l => l.classList.remove('nav-active'));
+        document.getElementById('nav-' + pageId).classList.add('nav-active');
+
+        // 4. Scroll al inicio
+        window.scrollTo(0, 0);
+
+        // 5. Reiniciar gráfico si estamos en finanzas
+        if(pageId === 'finanzas') {
+            setTimeout(initFinanceChart, 50);
         }
-    ];
+    }
 
-    let chart;
+    // Lógica Financiera
+    function updateFinance() {
+        const ppl = parseInt(document.getElementById('calc-ppl').value);
+        const months = parseInt(document.getElementById('calc-time').value);
+        const iprem = 600;
 
-    function initChart() {
-        const ctx = document.getElementById('ipremChart').getContext('2d');
-        chart = new Chart(ctx, {
+        document.getElementById('time-val').innerText = `${months} meses`;
+
+        let base = iprem; // 100% IPREM
+        if(ppl === 2) base = iprem * 1.75;
+        if(ppl === 3) base = iprem * 2.25;
+
+        const total = base * months;
+        document.getElementById('total-price').innerText = total.toLocaleString() + ' €';
+
+        if(currentChart) {
+            currentChart.data.datasets[0].data = [total];
+            currentChart.update();
+        }
+    }
+
+    function initFinanceChart() {
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        if(currentChart) currentChart.destroy();
+
+        currentChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Fondo Requerido (€)'],
+                labels: ['Fondo de Solvencia'],
                 datasets: [{
-                    label: 'Mínimo IPREM',
+                    label: 'Euros (€)',
                     data: [7200],
-                    backgroundColor: '#6366f1',
-                    borderRadius: 8,
-                    barThickness: 40
+                    backgroundColor: '#c5a059',
+                    borderWidth: 0
                 }]
             },
             options: {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
-                scales: { 
-                    y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { color: '#4a5568', font: { size: 9 } }
+                    },
+                    x: { ticks: { display: false } }
                 }
             }
         });
-    }
-
-    function showVisa(idx) {
-        // UI Logic
-        document.querySelectorAll('.visa-btn').forEach(b => {
-            b.classList.remove('active', 'border-indigo-500', 'bg-white');
-            b.classList.add('border-slate-100', 'bg-slate-50');
-        });
-        const activeBtn = document.getElementById(`btn-${idx}`);
-        activeBtn.classList.add('active', 'border-indigo-500', 'bg-white');
-        activeBtn.classList.remove('border-slate-100', 'bg-slate-50');
-
-        // Content Update
-        const data = visaDetails[idx];
-        document.getElementById('v-name').innerText = data.name;
-        document.getElementById('v-difficulty').innerText = data.diff;
-        document.getElementById('v-insight').innerText = `"${data.insight}"`;
-        
-        const reqList = document.getElementById('v-reqs');
-        reqList.innerHTML = data.reqs.map(r => `
-            <li class="flex items-start gap-2 text-sm">
-                <span class="text-indigo-500">✔</span> ${r}
-            </li>
-        `).join('');
-    }
-
-    function updateCalc() {
-        const family = parseInt(document.getElementById('calc-family').value);
-        const months = parseInt(document.getElementById('calc-months').value);
-        const ipremBase = 600;
-        
-        // Calculation Logic (Simplified model)
-        // Estudiante standard: 100% titular + 75% familiar 1 + 50% otros
-        let monthlyTotal = ipremBase;
-        if(family > 1) monthlyTotal += (ipremBase * 0.75);
-        if(family > 2) monthlyTotal += (ipremBase * 0.50 * (family - 2));
-
-        const grandTotal = monthlyTotal * months;
-        const usdTotal = grandTotal * 1.09;
-
-        document.getElementById('label-months').innerText = `${months} meses`;
-        document.getElementById('total-amount').innerText = `€ ${grandTotal.toLocaleString('de-DE')},00`;
-        document.getElementById('amount-usd').innerText = `≈ $ ${usdTotal.toLocaleString('en-US', {maximumFractionDigits: 0})} USD`;
-
-        // Update Chart
-        chart.data.datasets[0].data = [grandTotal];
-        chart.update();
+        updateFinance();
     }
 
     window.onload = () => {
-        initChart();
-        updateCalc();
-    };
+        // Carga inicial
+        showPage('home');
+    }
 </script>
 
 </body>
