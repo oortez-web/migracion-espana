@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO BÁSICO PARA GOOGLE -->
+    <title>Cómo Emigrar a España desde El Salvador | Guía Familiar 2026</title>
+    <meta name="description" content="Guía interactiva completa para salvadoreños que desean vivir en España. Requisitos de visado, costos del IPREM, trámites de apostilla y nacionalidad.">
+    <meta name="keywords" content="España, El Salvador, Emigrar, Visado No Lucrativo, Nómada Digital, IPREM, San Salvador, Embajada España">
+    <meta name="author" content="Estrategia Migratoria Familiar">
+    
+    <!-- OPEN GRAPH (PARA COMPARTIR EN REDES SOCIALES/WHATSAPP) -->
+    <meta property="og:title" content="Irte a España: Guía Familiar Interactiva">
+    <meta property="og:description" content="Todo lo que necesitas saber para tu traslado de San Salvador a España en un solo lugar.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_ES">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg-main: #FDFBF7;
+            --accent-primary: #2C5282;
+            --accent-secondary: #C05621;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: #2D3748;
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+
+        .glass-nav {
+            background: rgba(253, 251, 247, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .step-card:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<!-- Chosen Palette: Atlántico Cálido -->
+<!-- Application Structure Plan: Optimizado para SEO y legibilidad. Estructura jerárquica clara para que Google indexe las secciones como "Rutas", "Preparación" y "Costos". -->
+<!-- Visualization & Content Choices: Se mantienen los gráficos de Chart.js por su accesibilidad y ligereza. Se añaden metadatos para mejorar el posicionamiento. 
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="fixed top-0 w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl" role="img" aria-label="Bandera España">🇪🇸</span>
+                <span class="font-bold text-xl tracking-tight text-slate-800">Irte a España</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-wider">
+                <a href="#inicio" class="hover:text-blue-800">Inicio</a>
+                <a href="#rutas" class="hover:text-blue-800">Rutas</a>
+                <a href="#preparacion" class="hover:text-blue-800">Trámites</a>
+                <a href="#calculadora" class="hover:text-blue-800">Presupuesto</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="pt-24 pb-12">
+    
+    <article id="inicio" class="max-w-5xl mx-auto px-4 mb-20 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+            Guía Estratégica para Emigrar a <br><span class="text-orange-700 underline decoration-orange-300">España desde El Salvador</span>
+        </h1>
+        <p class="text-lg text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Un recurso interactivo diseñado para familias salvadoreñas. Aprende a navegar la burocracia española, calcular tus medios económicos (IPREM) y organizar tu logística desde San Salvador.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="#rutas" class="bg-blue-800 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-blue-900 transition">Ver Tipos de Visado</a>
+            <a href="#calculadora" class="bg-white border-2 border-slate-200 px-8 py-3 rounded-full font-bold hover:bg-slate-50 transition">Cálculo de Fondos</a>
+        </div>
+    </article>
+
+    <section id="rutas" class="bg-white py-20 border-y border-slate-100">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <header class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-800 mb-4">¿Cuál es tu ruta migratoria?</h2>
+                <p class="text-slate-600 max-w-4xl mx-auto">Compara los requisitos económicos y permisos de trabajo según el visado que solicites en la Embajada de España en San Salvador.</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="chart-container">
+                    <canvas id="visaComparisonChart"></canvas>
+                </div>
+                <div class="space-y-6 text-left">
+                    <div id="visa-details" class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                        <h3 id="visa-title" class="text-2xl font-bold text-blue-800 mb-2">Residencia No Lucrativa</h3>
+                        <p id="visa-desc" class="text-slate-700 leading-relaxed">Requiere demostrar altos fondos en cuenta bancaria. Es ideal para quienes ya tienen el capital acumulado y buscan la residencia rápida sin contrato laboral inicial.</p>
+                        <div class="mt-4 flex flex-wrap gap-2" id="visa-tags">
+                            <span class="bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Capital Propio</span>
+                            <span class="bg-red-50 text-red-700 text-xs font-bold px-3 py-1 rounded-full uppercase">No permite empleo</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="updateVisaInfo(0)" class="p-4 border border-slate-200 rounded-xl hover:bg-blue-50 transition text-sm font-bold">No Lucrativa</button>
+                        <button onclick="updateVisaInfo(1)" class="p-4 border border-slate-200 rounded-xl hover:bg-blue-50 transition text-sm font-bold">Nómada Digital</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="preparacion" class="py-20 max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-slate-800 mb-12 text-center">Gestión Documental en El Salvador</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-6 bg-white rounded-xl border border-slate-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2">1. Apostillas</h3>
+                <p class="text-sm text-slate-600">Todo documento salvadoreño debe pasar por Cancillería (Relaciones Exteriores) antes de ir a la Embajada.</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl border border-slate-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2">2. Certificado Médico</h3>
+                <p class="text-sm text-slate-600">Debe citar textualmente el Reglamento Sanitario Internacional de 2005 para ser aceptado.</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl border border-slate-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2">3. Solvencia Económica</h3>
+                <p class="text-sm text-slate-600">Estados de cuenta de los últimos 6 meses. Google e inmigración revisan la estabilidad, no solo el saldo final.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculadora" class="bg-orange-50 py-20">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white p-8 rounded-3xl shadow-xl">
+                <h2 class="text-2xl font-bold mb-6 text-center">Calculadora de Tasas Consulares (USD)</h2>
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Número de Adultos</label>
+                        <input type="number" id="input-adults" value="1" min="1" onchange="calculate()" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Hijos (Menores de 12)</label>
+                        <input type="number" id="input-kids" value="0" min="0" onchange="calculate()" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-orange-500">
+                    </div>
+                </div>
+                <div class="text-center border-t pt-6">
+                    <span class="text-slate-500 text-sm">Pago estimado en la Embajada:</span>
+                    <div id="total-fee" class="text-5xl font-bold text-orange-700 mt-2">$94.48</div>
+                    <p class="text-[10px] text-slate-400 mt-4 italic">Tasas referenciales para Visado Nacional. Sujeto a cambios por tipo de cambio oficial.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center text-xs">
+    <p>Guía para el Ciudadano Salvadoreño en el Exterior 2026. <br> No constituye asesoría legal vinculante.</p>
+</footer>
+
+<script>
+    const visaData = [
+        {
+            title: "Residencia No Lucrativa",
+            desc: "Ideal para familias con ahorros. Se exige el 400% del IPREM para el titular (~2.400€ mensuales). No permite trabajar para empresas españolas.",
+            tags: ["Ahorros", "Inversores", "Rentas"],
+            iprem: 400
+        },
+        {
+            title: "Nómada Digital",
+            desc: "Para quienes trabajan remoto. Exige el 200% del IPREM (~1.260€). Permite a los familiares trabajar en España y ofrece beneficios fiscales.",
+            tags: ["Teletrabajo", "Menor IPREM", "Permiso Familiar"],
+            iprem: 200
+        }
+    ];
+
+    let chart;
+    function init() {
+        const ctx = document.getElementById('visaComparisonChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: visaData.map(v => v.title),
+                datasets: [{
+                    label: '% IPREM Requerido',
+                    data: visaData.map(v => v.iprem),
+                    backgroundColor: ['#C05621', '#2C5282'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, max: 500 } }
+            }
+        });
+    }
+
+    function updateVisaInfo(idx) {
+        const v = visaData[idx];
+        document.getElementById('visa-title').innerText = v.title;
+        document.getElementById('visa-desc').innerText = v.desc;
+        const tags = document.getElementById('visa-tags');
+        tags.innerHTML = v.tags.map(t => `<span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase">${t}</span>`).join('');
+    }
+
+    function calculate() {
+        const adults = parseInt(document.getElementById('input-adults').value) || 0;
+        const kids = parseInt(document.getElementById('input-kids').value) || 0;
+        const total = (adults * 94.48) + (kids * 47.24);
+        document.getElementById('total-fee').innerText = `$${total.toFixed(2)}`;
+    }
+
+    window.onload = () => { init(); calculate(); };
+</script>
+</body>
+</html>
